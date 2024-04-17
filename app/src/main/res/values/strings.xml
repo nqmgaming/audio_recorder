@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Audio Recoder</string>
+    <string name="text_timer">00:00.00</string>
+</resources>
