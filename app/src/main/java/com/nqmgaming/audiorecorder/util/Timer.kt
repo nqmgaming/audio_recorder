@@ -49,4 +49,8 @@ class Timer(listener: OnTimerTickListener) {
 
         return  formatted
     }
+
+    fun getDurationInSeconds(): Long{
+        return duration / 1000
+    }
 }

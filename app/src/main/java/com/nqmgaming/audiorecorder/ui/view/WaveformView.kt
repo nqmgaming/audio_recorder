@@ -7,7 +7,6 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
-import android.animation.ValueAnimator
 
 
 class WaveformView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
@@ -15,7 +14,6 @@ class WaveformView(context: Context?, attrs: AttributeSet?) : View(context, attr
     private val paint = Paint().apply { color = Color.rgb(244, 81, 30) }
     private val amplitudes = ArrayList<Float>()
     private val spikes = ArrayList<RectF>()
-    private var animator: ValueAnimator? = null
     private val radius = 6f
     private val w = 9f
     private val d = 6f
@@ -26,7 +24,6 @@ class WaveformView(context: Context?, attrs: AttributeSet?) : View(context, attr
     private val maxAmplitude = 1000f
     private val minHeight = 10f
     private val maxHeight = 600f
-    private val animationDuration = 500L
 
     fun addAmplitude(amp: Float) {
         val filteredAmp = applyNoiseReductionFilter(amp)
@@ -51,6 +48,12 @@ class WaveformView(context: Context?, attrs: AttributeSet?) : View(context, attr
 
     private fun applyNoiseReductionFilter(amp: Float): Float {
         // This is a placeholder for your noise reduction algorithm.
+
+        // The noise reduction algorithm should take the amplitude as input and return the filtered amplitude.
+
+        if (amp < minAmplitude) {
+            return 0f
+        }
         // Replace this with your actual implementation.
         return amp
     }
@@ -61,7 +64,7 @@ class WaveformView(context: Context?, attrs: AttributeSet?) : View(context, attr
         invalidate()
     }
 
-    fun interpolate(a: Float, b: Float, proportion: Float): Float {
+    private fun interpolate(a: Float, b: Float, proportion: Float): Float {
         return (a + ((b - a) * proportion))
     }
 

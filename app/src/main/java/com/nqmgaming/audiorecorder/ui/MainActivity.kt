@@ -8,21 +8,25 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.gun0912.tedpermission.coroutine.TedPermission
+import com.nqmgaming.audiorecorder.ui.view.ModalBottomSheet
 import com.nqmgaming.audiorecorder.R
 import com.nqmgaming.audiorecorder.databinding.ActivityMainBinding
+import com.nqmgaming.audiorecorder.util.OnNameChangedListener
 import com.nqmgaming.audiorecorder.util.SharePreferencesUtil
 import com.nqmgaming.audiorecorder.util.Timer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -30,13 +34,11 @@ import java.util.Locale
 class MainActivity : AppCompatActivity(), Timer.OnTimerTickListener {
     private lateinit var binding: ActivityMainBinding
     private var permissionGranted = false
-    private lateinit var recoder: MediaRecorder
+    private lateinit var recorder: MediaRecorder
     private var dirPath = ""
     private var fileName = ""
     private var isRecording = false
     private var isPause = false
-    private val TAG = "MainActivityRecorder"
-    private var duration = 0
     private lateinit var timer: Timer
     private lateinit var vibrator: Vibrator
 
@@ -68,47 +70,25 @@ class MainActivity : AppCompatActivity(), Timer.OnTimerTickListener {
         }
 
         binding.btnDiscard.setOnClickListener {
-            // Alert dialog
-            val dialog = AlertDialog.Builder(this)
+            // Material Dialog
+            MaterialAlertDialogBuilder(this, R.style.ThemeOverlay_App_MaterialAlertDialog)
                 .setTitle("Discard recording")
                 .setMessage("Are you sure you want to discard this recording?")
-                .setPositiveButton("Yes") { _, _ ->
-                    // Discard recording
-                    recoder.stop()
-                    recoder.release()
-                    binding.waveformView.clear()
-                    binding.tvTimer.text = "00:00"
-                    binding.tvNameRecord.text = ""
-                    binding.llSave.visibility = View.GONE
-                    binding.llDiscard.visibility = View.GONE
-                    binding.tvNameRecord.visibility = View.GONE
-                    isRecording = false
-                    isPause = false
-                    timer.stop()
-                    binding.btnStartRecord.setImageResource(R.drawable.ic_record)
-                }
-                .setNegativeButton("No") { dialog, _ ->
+                .setPositiveButton("Discard") { dialog, _ ->
+                    stopRecording()
+                    File(filesDir, fileName).delete()
                     dialog.dismiss()
                 }
-                .create()
-            dialog.show()
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+
         }
 
         binding.btnSave.setOnClickListener {
-            // Save recording
-            recoder.stop()
-            recoder.release()
-            binding.waveformView.clear()
-            binding.tvTimer.text = "00:00"
-            binding.tvNameRecord.text = ""
-            binding.llSave.visibility = View.GONE
-            binding.llDiscard.visibility = View.GONE
-            binding.tvNameRecord.visibility = View.GONE
-            isRecording = false
-            isPause = false
-            timer.stop()
-            binding.btnStartRecord.setImageResource(R.drawable.ic_record)
-            Toast.makeText(this, "Recording saved", Toast.LENGTH_SHORT).show()
+            stopRecording()
+            showRenameDialog()
         }
 
         binding.btnStartRecord.setOnClickListener {
@@ -145,15 +125,54 @@ class MainActivity : AppCompatActivity(), Timer.OnTimerTickListener {
 
     }
 
-    // Stop recording
     private fun stopRecording() {
-        recoder.stop()
-        recoder.release()
+        if (isRecording) {
+            recorder.apply {
+                stop()
+                release()
+            }
+        }
+        binding.apply {
+            waveformView.clear()
+            tvTimer.text = "00:00"
+            tvNameRecord.text = ""
+        }
+        hideView()
+        isRecording = false
+        isPause = false
+        timer.stop()
+    }
+
+    private fun showRenameDialog() {
+        val modalBottomSheet = ModalBottomSheet().apply {
+            arguments = Bundle().apply {
+                putString("fileName", fileName)
+            }
+            listener = object : OnNameChangedListener {
+                override fun onNameChanged(newName: String) {
+                    renameFile(newName)
+                }
+            }
+        }
+        modalBottomSheet.show(supportFragmentManager, "ModalBottomSheet")
         binding.btnStartRecord.setImageResource(R.drawable.ic_record)
     }
 
+    private fun renameFile(newName: String) {
+        val newFilePath = "$dirPath$newName.mp3"
+        val file = filesDir.resolve(fileName)
+        val success = file.renameTo(filesDir.resolve(newFilePath))
+        if (success) {
+            Log.d("File", "File renamed successfully")
+        } else {
+            Log.d("File", "File not renamed")
+        }
+        binding.btnStartRecord.setImageResource(R.drawable.ic_record)
+        Toast.makeText(this, "Recording saved", Toast.LENGTH_SHORT).show()
+    }
+
     private fun pauseRecording() {
-        recoder.pause()
+        recorder.pause()
         isPause = true
         isRecording = false
         binding.btnStartRecord.setImageResource(R.drawable.ic_record)
@@ -161,7 +180,7 @@ class MainActivity : AppCompatActivity(), Timer.OnTimerTickListener {
     }
 
     private fun resumeRecording() {
-        recoder.resume()
+        recorder.resume()
         isPause = false
         isRecording = true
         binding.btnStartRecord.setImageResource(R.drawable.ic_pause)
@@ -171,12 +190,12 @@ class MainActivity : AppCompatActivity(), Timer.OnTimerTickListener {
     private fun startRecording() {
         if (permissionGranted) {
             // Start recording
-            recoder =
+            recorder =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) MediaRecorder(this) else MediaRecorder()
             dirPath = "${externalCacheDir?.absolutePath}/"
-            var simpleDateFormat = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault())
+            val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault())
             fileName = "recording${simpleDateFormat.format(System.currentTimeMillis())}.mp3"
-            recoder.apply {
+            recorder.apply {
                 setAudioSource(MediaRecorder.AudioSource.MIC)
                 setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
                 setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
@@ -229,18 +248,34 @@ class MainActivity : AppCompatActivity(), Timer.OnTimerTickListener {
 
     override fun onTimerTick(duration: String) {
         binding.tvTimer.text = duration
-        binding.waveformView.addAmplitude(recoder.maxAmplitude.toFloat())
+        binding.waveformView.addAmplitude(recorder.maxAmplitude.toFloat())
+        val durationInSeconds = timer.getDurationInSeconds()
+        val fileSize = getFileSize(durationInSeconds)
+        binding.tvFileProperties.text = "File size: $fileSize MB"
     }
 
     private fun showView() {
         binding.llSave.visibility = View.VISIBLE
         binding.llDiscard.visibility = View.VISIBLE
         binding.tvNameRecord.visibility = View.VISIBLE
+        binding.ivSound.visibility = View.INVISIBLE
+        binding.tvFileProperties.visibility = View.VISIBLE
     }
 
     private fun hideView() {
         binding.llSave.visibility = View.GONE
         binding.llDiscard.visibility = View.GONE
         binding.tvNameRecord.visibility = View.VISIBLE
+        binding.ivSound.visibility = View.VISIBLE
+        binding.tvFileProperties.visibility = View.GONE
+    }
+
+    private fun getFileSize(durationInSeconds: Long): Double {
+        val bitRate = 128 // kbps
+        val fileSizeInKb = durationInSeconds * bitRate
+        val fileSizeInMb = fileSizeInKb.toDouble() / (1024 * 10)
+        val roundedFileSizeInMb = String.format("%.1f", fileSizeInMb).toDouble()
+        Log.d("File size", "File size: $roundedFileSizeInMb MB")
+        return roundedFileSizeInMb
     }
 }
