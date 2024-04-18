@@ -1,4 +1,4 @@
-package com.nqmgaming.audiorecorder
+package com.nqmgaming.audiorecorder.ui.view
 
 import android.content.Context
 import android.graphics.Canvas
@@ -8,7 +8,6 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import android.animation.ValueAnimator
-import android.animation.ValueAnimator.AnimatorUpdateListener
 
 
 class WaveformView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {

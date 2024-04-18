@@ -1,4 +1,4 @@
-package com.nqmgaming.audiorecorder
+package com.nqmgaming.audiorecorder.ui
 
 import android.Manifest
 import android.content.Context
@@ -9,12 +9,15 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.gun0912.tedpermission.coroutine.TedPermission
+import com.nqmgaming.audiorecorder.R
 import com.nqmgaming.audiorecorder.databinding.ActivityMainBinding
 import com.nqmgaming.audiorecorder.util.SharePreferencesUtil
 import com.nqmgaming.audiorecorder.util.Timer
@@ -63,6 +66,51 @@ class MainActivity : AppCompatActivity(), Timer.OnTimerTickListener {
             @Suppress("DEPRECATION")
             getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
+
+        binding.btnDiscard.setOnClickListener {
+            // Alert dialog
+            val dialog = AlertDialog.Builder(this)
+                .setTitle("Discard recording")
+                .setMessage("Are you sure you want to discard this recording?")
+                .setPositiveButton("Yes") { _, _ ->
+                    // Discard recording
+                    recoder.stop()
+                    recoder.release()
+                    binding.waveformView.clear()
+                    binding.tvTimer.text = "00:00"
+                    binding.tvNameRecord.text = ""
+                    binding.llSave.visibility = View.GONE
+                    binding.llDiscard.visibility = View.GONE
+                    binding.tvNameRecord.visibility = View.GONE
+                    isRecording = false
+                    isPause = false
+                    timer.stop()
+                    binding.btnStartRecord.setImageResource(R.drawable.ic_record)
+                }
+                .setNegativeButton("No") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .create()
+            dialog.show()
+        }
+
+        binding.btnSave.setOnClickListener {
+            // Save recording
+            recoder.stop()
+            recoder.release()
+            binding.waveformView.clear()
+            binding.tvTimer.text = "00:00"
+            binding.tvNameRecord.text = ""
+            binding.llSave.visibility = View.GONE
+            binding.llDiscard.visibility = View.GONE
+            binding.tvNameRecord.visibility = View.GONE
+            isRecording = false
+            isPause = false
+            timer.stop()
+            binding.btnStartRecord.setImageResource(R.drawable.ic_record)
+            Toast.makeText(this, "Recording saved", Toast.LENGTH_SHORT).show()
+        }
+
         binding.btnStartRecord.setOnClickListener {
             // Record audio
             when {
