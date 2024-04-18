@@ -7,6 +7,17 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <com.nqmgaming.audiorecorder.WaveformView
+        android:id="@+id/waveformView"
+        android:layout_marginTop="200dp"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        app:layout_constraintBottom_toTopOf="@+id/tvTimer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
     <TextView
         android:id="@+id/tvTimer"
         android:layout_width="wrap_content"
@@ -16,46 +27,109 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.75" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/tvNameRecord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/text_name_record"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTimer" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="60dp"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <ImageButton
+        <LinearLayout
+            android:id="@+id/ll_discard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_ripple"
-            android:padding="8dp"
-            android:src="@drawable/ic_clear_disabled" />
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/btnStartRecord"
+            app:layout_constraintEnd_toStartOf="@+id/btnStartRecord"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btnStartRecord">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="@string/discard"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/btnDiscard"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/ic_record"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_clear_disabled" />
+        </LinearLayout>
 
         <ImageButton
-            android:layout_width="66dp"
-            android:layout_height="66dp"
-            android:layout_marginHorizontal="30dp"
+            android:id="@+id/btnStartRecord"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:background="@drawable/ic_ripple"
-            android:padding="5dp"
-            android:src="@drawable/ic_record" />
+            android:elevation="5dp"
+            android:padding="25dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_record"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
-        <ImageButton
+        <LinearLayout
+            android:id="@+id/ll_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_ripple"
-            android:padding="8dp"
-            android:src="@drawable/ic_list" />
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/btnStartRecord"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnStartRecord"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_ripple"
-            android:padding="8dp"
-            android:src="@drawable/ic_done"
-            android:visibility="gone" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="@string/save"
+                android:textSize="16sp" />
 
-    </LinearLayout>
+            <ImageButton
+                android:id="@+id/btnSave"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/ic_record"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_done" />
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
