@@ -1,6 +1,7 @@
 package com.nqmgaming.audiorecorder.ui.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,10 +33,11 @@ class ModalBottomSheet : BottomSheetDialogFragment() {
         (dialog as BottomSheetDialog).behavior.state = BottomSheetBehavior.STATE_EXPANDED
 
         val fileName = arguments?.getString("fileName")
+        val dirPath = arguments?.getString("dirPath")
         binding.etNameRecord.setText(fileName)
 
         binding.btnCancel.setOnClickListener {
-            deleteFile(fileName)
+            deleteFile(fileName, dirPath)
             dismiss()
         }
 
@@ -50,18 +52,20 @@ class ModalBottomSheet : BottomSheetDialogFragment() {
         }
 
         dialog?.setOnCancelListener {
-            deleteFile(fileName)
+            deleteFile(fileName, dirPath)
         }
 
     }
 
-    private fun deleteFile(fileName: String?) {
-        val file = fileName?.let { File(it) }
-        if (file != null) {
-            if (file.exists()) {
-                file.delete()
-            }
+    private fun deleteFile(fileName: String?, dirPath: String?) {
+        val file = File("$dirPath$fileName")
+        val result = file.delete()
+        if (result) {
+            Log.d("File", "File deleted successfully")
+        } else {
+            Log.d("File", "File not deleted")
         }
+
     }
 
     override fun onDestroyView() {

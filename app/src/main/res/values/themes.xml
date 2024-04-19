@@ -1,30 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.AudioRecorder" parent="Theme.Material3.DayNight.NoActionBar">
-
-        <item name="android:textColor">
-            @color/colorText
-        </item>
-        <item name="rippleColor">
-            @color/grayDarkDisabled
-        </item>
-        <item name="android:windowLightStatusBar">
-            true
-        </item>
-        <item name="android:statusBarColor">
-            @color/statusColor
-        </item>
-
-        <item name="android:windowBackground">
-            @drawable/bottom_sheet_background
-        </item>
-
-        <item name="android:windowContentTransitions">
-            true
-        </item>
+    <style name="Theme.AudioRecorder" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:textColor">@color/colorText</item>
+        <item name="rippleColor">@color/grayDarkDisabled</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/statusColor</item>
+        <item name="android:windowBackground">@drawable/bottom_sheet_background</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
-
-    <style name="Theme.AudioRecorder" parent="Base.Theme.AudioRecorder" />
 
     <style name="TextLayoutStyle" parent="Widget.Material3.TextInputLayout.FilledBox">
         <item name="android:background">@drawable/rounded_edit_text</item>
@@ -34,9 +17,7 @@
         <item name="android:textSize">18sp</item>
     </style>
 
-    <style name="ModalBottomSheet" parent="Widget.Material3.BottomSheet.Modal">
-        <!-- Apply attributes here -->
-    </style>
+    <style name="ModalBottomSheet" parent="Widget.Material3.BottomSheet.Modal"></style>
 
     <style name="ModalBottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/ModalBottomSheet</item>
@@ -48,20 +29,12 @@
     </style>
 
     <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
-
         <item name="alertDialogStyle">@style/MaterialAlertDialog.App</item>
-        <item name="materialAlertDialogTitleTextStyle">@style/MaterialAlertDialog.App.Title.Text
-        </item>
         <item name="buttonBarPositiveButtonStyle">@style/Widget.App.Button</item>
     </style>
 
     <style name="MaterialAlertDialog.App" parent="MaterialAlertDialog.Material3">
         <item name="shapeAppearance">@style/ShapeAppearance.App.MediumComponent</item>
-        <item name="shapeAppearanceOverlay">@null</item>
-    </style>
-
-    <style name="MaterialAlertDialog.App.Title.Text" parent="MaterialAlertDialog.Material3.Title.Text">
-        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="Widget.App.Button" parent="Widget.Material3.Button.TextButton.Dialog">
@@ -72,5 +45,4 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">8dp</item>
     </style>
-
 </resources>

@@ -2,10 +2,11 @@ package com.nqmgaming.audiorecorder.util
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 
 class Timer(listener: OnTimerTickListener) {
 
-    interface OnTimerTickListener{
+    interface OnTimerTickListener {
         fun onTimerTick(duration: String)
     }
 
@@ -15,7 +16,7 @@ class Timer(listener: OnTimerTickListener) {
     private var duration = 0L
     private var delay = 100L
 
-    init{
+    init {
         runnable = Runnable {
             duration += delay
             handler.postDelayed(runnable, delay)
@@ -23,34 +24,39 @@ class Timer(listener: OnTimerTickListener) {
         }
     }
 
-    fun start(){
+    fun start() {
         handler.postDelayed(runnable, delay)
     }
 
-    fun pause(){
+    fun pause() {
         handler.removeCallbacks(runnable)
     }
 
-    fun stop(){
+    fun stop() {
         handler.removeCallbacks(runnable)
         duration = 0L
     }
 
-    fun format(): String{
+    fun format(): String {
         val millis = duration % 1000
         val seconds = (duration / 1000) % 60
         val minutes = (duration / (1000 * 60)) % 60
         val hours = (duration / (1000 * 60 * 60))
 
-        var formatted = if(hours > 0)
-            "%02d:%02d:%02d.%02d".format(hours, minutes, seconds, millis/10)
+        var formatted = if (hours > 0)
+            "%02d:%02d:%02d.%02d".format(hours, minutes, seconds, millis / 10)
         else
-            "%02d:%02d.%02d".format(minutes, seconds, millis/10)
+            "%02d:%02d.%02d".format(minutes, seconds, millis / 10)
 
-        return  formatted
+        return formatted
     }
 
-    fun getDurationInSeconds(): Long{
+    fun getDurationInSeconds(): Long {
         return duration / 1000
+    }
+
+    fun getDuration(): String {
+        Log.d("Timer", "Duration: $duration")
+        return format()
     }
 }

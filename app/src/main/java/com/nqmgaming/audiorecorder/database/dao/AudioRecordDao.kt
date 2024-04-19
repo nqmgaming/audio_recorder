@@ -17,17 +17,21 @@ interface AudioRecordDao {
 
     // Insert a record
     @Insert
-    suspend fun insertRecord(vararg audioRecord: AudioRecord)
+    suspend fun insertRecord(audioRecord: AudioRecord): Long
 
     // Delete a record
     @Delete
-    suspend fun deleteRecord(audioRecord: AudioRecord)
+    suspend fun deleteRecord(audioRecord: AudioRecord): Int
 
     // Delete multiple records
     @Delete
-    suspend fun deleteRecords(audioRecords: List<AudioRecord>)
+    suspend fun deleteRecords(audioRecords: List<AudioRecord>): Int
+
+    // Delete all records
+    @Query("DELETE FROM audio_record")
+    suspend fun deleteAllRecords(): Int
 
     // Update a record
     @Update
-    suspend fun updateRecord(audioRecord: AudioRecord)
+    suspend fun updateRecord(audioRecord: AudioRecord): Int
 }

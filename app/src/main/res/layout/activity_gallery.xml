@@ -5,6 +5,11 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.ListRecorded">
+    tools:context=".ui.GalleryActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rc_audio"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

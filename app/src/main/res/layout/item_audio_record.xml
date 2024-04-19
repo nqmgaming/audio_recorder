@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="?attr/materialCardViewElevatedStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
+    android:checkable="true"
+    android:clickable="true"
+    android:elevation="@dimen/cardview_default_elevation"
+    android:focusable="true"
+    app:rippleColor="?attr/colorOnTertiary"
+    app:shapeAppearance="?attr/shapeAppearanceSmallComponent"
+    app:strokeColor="?attr/colorOnTertiary"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btn_play"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/ic_circle"
+            android:clickable="false"
+            android:src="@drawable/ic_play" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_fileName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="File Name"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_Meta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Meta Data"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/cb_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            android:layout_marginStart="20dp"
+            android:buttonTint="?attr/colorOnBackground"
+            android:checkable="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="10dp" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
